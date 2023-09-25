@@ -1,0 +1,271 @@
+// quinn pearson  || 9.25.23
+// for skate pong project
+
+
+var w = 700;
+var h = 400;
+
+var p1_input;
+var p2_input;
+
+var ball_x = 350;
+var ball_y = 200;
+
+var p1_x = 20; //
+var p1_y = 210;
+var p2_x = 670; //
+var p2_y = 110;
+
+var score_1 = 0;
+var score_2 = 0;
+
+var paddle_width = 8;
+var paddle_height = 80;
+
+let speed = 2;
+
+let direction_x = 1;
+let direction_y = 1.5;
+
+let paddle1_direction = 3;
+let paddle2_direction = 3;
+
+let mainFont;
+let GOfont;
+
+let counter = 0;
+
+function setup() {
+  createCanvas(w, h);
+  textSize(30);
+  textFont(mainFont);
+  noStroke();
+  
+  bounceSound = loadSound('assets/bounceSound.wav');
+  pointSound = loadSound('assets/pointSound.wav');
+  endSound = loadSound('assets/endSound.wav');
+  
+  print("begin game");
+  
+  
+}
+
+function draw() {
+  
+  if(counter == 0){
+    background("#424242");
+    
+    ballBounce();
+    
+  }
+  
+  textSize(24);
+  
+  score();
+  
+  // barrier
+  rect(349, 0, 2, h, 0);
+  fill("#e4e4e4");
+  
+  // player 1 paddle
+  rect(p1_x, p1_y, paddle_width, paddle_height, 10);
+  fill("#e4e4e4");
+  
+  // player 2 paddle
+  rect(p2_x, p2_y, paddle_width, paddle_height, 10);
+  fill("#e4e4e4");
+  
+  keyPressed();
+  hitPaddle();
+  movePaddle();
+  
+
+  
+}
+
+function preload() {
+  mainFont = loadFont('assets/mainFont.ttf');
+  GOfont = loadFont('assets/GOfont.ttf');
+}
+
+function ballBounce() {
+
+  ellipse(ball_x, ball_y, 20, 20);
+  fill('#e4e4e4'); 
+  
+  ball_x += direction_x * speed ;
+  ball_y += direction_y * speed;
+
+  //bounce off walls
+  if (ball_y >= h || ball_y <= 0) {
+    direction_y = -direction_y
+  }
+  
+  outOfBounds();
+  
+}
+
+function outOfBounds(){
+  
+  // OFB side 1
+  if(ball_x == 0){
+   score_2 = score_2 +1;
+    pointSound.play();
+    
+    if (score_2 == 7){
+      gameOver();
+    }
+    reset();
+  }
+
+  // OFB side 2
+  if(ball_x == 700){
+   score_1 = score_1 +1;
+    pointSound.play();
+    
+    if (score_1 == 7){
+    gameOver();
+   }
+    reset();
+  }
+}
+
+function hitPaddle(){
+
+  if ((p1_y < ball_y) && (ball_y < p1_y+paddle_height) && (ball_x == p1_x+paddle_width)){
+    bounceSound.play();
+    direction_x = -direction_x;
+  }
+  
+  if ((p2_y < ball_y) && (ball_y < p2_y+paddle_height) && (ball_x == p2_x)){
+    bounceSound.play();
+    direction_x = -direction_x;
+  }
+  
+}
+
+function movePaddle(){
+  
+//   if(keyIsPressed){
+//      print("key is pressed:  ");
+//      print(keyCode);
+// }
+  
+  if(keyIsPressed == true){
+    
+    if(keyIsDown(65)){
+      print("p1 move");
+
+      if (p1_y <= 0 || p1_y >= h-paddle_height){
+         paddle1_direction = -paddle1_direction;
+      }
+
+        p1_y += (paddle1_direction * 5);
+    }
+
+    if(keyIsDown(68)){
+      print("p2 move");
+
+      if (p2_y <= 0 || p2_y >= h-paddle_height){
+        paddle2_direction = -paddle2_direction;
+      }
+
+        p2_y += (paddle2_direction * 5);
+    }
+  }
+}
+
+function keyPressed(){
+  
+//   if(keyIsPressed){
+//     print("key is pressed:  ");
+//   }
+  
+//   print(key, keyCode); 
+  
+  if (keyIsDown(32) == true){
+    resetGame();
+  }
+  
+  if (keyIsDown(ENTER) == true){
+    resetGame();
+  }
+
+  
+}
+
+function score(){
+  
+  // player 1 score
+  text(score_1, 175-15, 40);
+  
+  // player 2 score
+  text(score_2, 525-15, 40);
+  
+}
+
+function reset(){
+  ball_x = 350;
+  ball_y = 200;
+  
+  direction_x = 0-direction_x;
+  
+}
+  
+function gameOver(){
+  
+  fill('#e4e4e4');
+  rect(0,0,w,h);
+   
+  textFont(GOfont);
+  textSize(55);
+  fill('#424242');
+  text(" game over", 213, 200);
+  
+  endSound.play();
+  
+  if (score_1 == 7){
+    p1Wins();
+  }
+  
+  else if(score_2 == 7){
+    p2Wins();
+  }
+  
+}
+
+function p1Wins(){
+  textFont(mainFont);
+  textSize(18);
+  text(" player 1 wins", 230, 235);
+  fill('#424242');
+  counter = counter +1;
+  resetGame();
+}
+  
+function p2Wins(){
+  textFont(mainFont);
+  textSize(18);
+  text(" player 2 wins", 230, 235);
+  fill('#424242');
+  counter = counter +1;
+  resetGame();
+}
+
+function resetGame(){
+  if (keyIsDown(ENTER) == true){
+    score_1 = 0;
+    score_2 = 0;
+    counter = 0;
+    reset();
+  }
+}
+
+
+
+
+
+
+
+
+

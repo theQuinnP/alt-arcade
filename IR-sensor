@@ -1,0 +1,31 @@
+// quinn pearson  ||  9.25.23
+// for skate pong project
+
+int sensor1_pin = 8;
+int sensor2_pin = 7;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(sensor1_pin, INPUT); 
+  pinMode(sensor2_pin, INPUT);  
+
+}
+
+void loop() {
+  int sensor1 = digitalRead(sensor1_pin);
+  int sensor2 = digitalRead(sensor2_pin);
+//  Serial.print("sensor 1:  ");
+//  Serial.print(sensor1);
+//  Serial.print("  |  ");
+//  Serial.print("sensor 2:  ");
+//  Serial.println(sensor2);
+ 
+
+  if(sensor1 == 1){
+    Keyboard.print("a");
+  }
+
+  if(sensor2 == 1){
+    Keyboard.print("d");
+  }
+}
